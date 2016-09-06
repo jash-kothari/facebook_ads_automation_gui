@@ -2,6 +2,7 @@ from facebookads.adobjects.adimage import AdImage
 import header
 import urllib
 import os
+
 def get_image_hash(url,name):
 	urllib.urlretrieve(url,name)
 	image = AdImage(parent_id=header.my_account['id'])

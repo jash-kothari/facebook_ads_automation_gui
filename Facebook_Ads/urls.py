@@ -17,7 +17,7 @@ from django.conf.urls import url
 from django.contrib import admin
 from FacebookAutomatedAds import views as faaviews
 urlpatterns = [
-	url(r'^$', faaviews.index),
+	url(r'^$', faaviews.index,name='index'),
 	url(r'^get_data/', faaviews.get_data,name='get_data'),
     url(r'^admin/', admin.site.urls),
 ]

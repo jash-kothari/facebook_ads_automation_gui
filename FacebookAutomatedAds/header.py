@@ -19,5 +19,5 @@ user = os.environ['FB_APP_DATABASE_USER']
 password = os.environ['FB_APP_DATABASE_PASSWORD']
 FacebookAdsApi.init(my_app_id, my_app_secret, my_access_token)
 me = AdUser(fbid='me')
-my_account = me.get_ad_accounts()[1]
+my_account = me.get_ad_accounts()[0]
 my_account=json.loads(str(my_account).replace('<AdAccount> ',''))

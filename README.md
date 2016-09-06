@@ -1,43 +1,24 @@
-# Heroku Django Starter Template
+# GUI Version for my repo of Facebook Ads Automation CLI
 
-An utterly fantastic project starter template for Django 1.9.
+Pre Requisite
+Needs Facebook-ads-python-sdk installed
 
-## Features
+Set Environment Variables
 
-- Production-ready configuration for Static Files, Database Settings, Gunicorn, etc.
-- Enhancements to Django's static file serving functionality via WhiteNoise
+ADS_FB_APP_ID = Your Facebook App Id
 
-## How to Use
+ADS_FB_APP_SECRET = Your Facebook App Secret
 
-To use this project, follow these steps:
+ADS_FB_APP_ACCESS_TOKEN = Access token for ads management
 
-1. Create your working environment.
-2. Install Django (`$ pip install django`)
-3. Create a new project using this template
+FB_APP_DATABASE = Your Database Name
 
-## Creating Your Project
+FB_APP_DATABASE_HOST = Your Database Host
 
-Using this template to create a new Django app is easy::
+FB_APP_DATABASE_PORT = Your DatabasePort
 
-    $ django-admin.py startproject --template=https://github.com/heroku/heroku-django-template/archive/master.zip --name=Procfile helloworld
+FB_APP_DATABASE_USER = Your Database User
 
-You can replace ``helloworld`` with your desired project name.
+FB_APP_DATABASE_PASSWORD = Your Database Password
 
-## Deployment to Heroku
-
-    $ git init
-    $ git add -A
-    $ git commit -m "Initial commit"
-
-    $ heroku create
-    $ git push heroku master
-
-    $ heroku run python manage.py migrate
-
-See also, a [ready-made application](https://github.com/heroku/python-getting-started), ready to deploy.
-
-## Further Reading
-
-- [Gunicorn](https://warehouse.python.org/project/gunicorn/)
-- [WhiteNoise](https://warehouse.python.org/project/whitenoise/)
-- [dj-database-url](https://warehouse.python.org/project/dj-database-url/)
+DJANGO_APP_SECRET = Your Django App Secret Key
