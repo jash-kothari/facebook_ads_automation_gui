@@ -12,12 +12,10 @@ def get_data(request):
 	account_id = request.POST.get('id_select',False)
 	campaign_id = request.POST.get('campaign_id',False)
 	adset_id = request.POST.get('adset_id',False)
-	design_ids=[]
-	for i in xrange(5):
-		design_ids.append(request.POST.get('product_id'+str(i+1),False))
+	design_ids = request.POST.get('product_ids').split(',')
 	caption = request.POST.get('caption',False)
 	ad_name = request.POST.get('ad_name',False)
-	if create_carousel.create_carousel_ad(caption,adset_id,ad_name,campaign_id,5,design_ids,account_id):
+	if create_carousel.create_carousel_ad(caption,adset_id,ad_name,campaign_id,len(design_ids),design_ids,account_id):
 		return render(request, 'FacebookAutomatedAds/success.html')
 	else:
 		return render(request,'FacebookAutomatedAds/500.html',status=500)
