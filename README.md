@@ -22,3 +22,25 @@ FB_APP_DATABASE_USER = Your Database User
 FB_APP_DATABASE_PASSWORD = Your Database Password
 
 DJANGO_APP_SECRET = Your Django App Secret Key
+
+Check if you have pip
+
+    pip -V
+
+If it outputs version then  proceed to migrations else get pip from [get-pip.py](https://bootstrap.pypa.io/get-pip.py)
+
+Then do if you dont have pip
+
+    python get-pip.py
+
+After setting environment variables
+
+    pip install -r requirments.txt
+
+Then run migrations
+
+    python manage.py migrate
+
+To Run
+
+    python manage.py runserver
