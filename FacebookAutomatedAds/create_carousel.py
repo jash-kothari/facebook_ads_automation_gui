@@ -5,16 +5,17 @@ from facebookads.adobjects.adcreativelinkdata import AdCreativeLinkData
 from facebookads.adobjects.adcreativeobjectstoryspec import AdCreativeObjectStorySpec
 from facebookads.adobjects.adcreativelinkdatachildattachment import AdCreativeLinkDataChildAttachment
 import header
+import my_constants as constants
 import json
 import psycopg2
 import image_hash
 import sys
 
-def create_carousel_ad(caption,adset_id,ad_name,campaign_id,times,design_list):
+def create_carousel_ad(caption,adset_id,ad_name,campaign_id,times,design_list,account_id):
 	con = None
 	simple_list=[]
 	try:
-		con = psycopg2.connect(database=header.database, user=header.user, password=header.password,host=header.host,port=header.port)
+		con = psycopg2.connect(database=constants.database, user=constants.user, password=constants.password,host=constants.host,port=constants.port)
 		cur = con.cursor()
 		for i in xrange(times):
 			design_id=design_list[i]
@@ -40,10 +41,10 @@ def create_carousel_ad(caption,adset_id,ad_name,campaign_id,times,design_list):
 			if row[0] is None:
 				row[0]=0
 			product1 = AdCreativeLinkDataChildAttachment()
-			product1[AdCreativeLinkDataChildAttachment.Field.link] = 'www.mirraw.com/designers/'+str(row[1])+'/designs/'+design_id+'?utm_source=facebook&utm_medium=cpc&utm_campaign='+str(campaign_id)
+			product1[AdCreativeLinkDataChildAttachment.Field.link] = 'www.mirraw.com/designers/'+str(row[1])+'/designs/'+design_id+'?utm_source=facebook-auto&utm_medium=cpc&utm_campaign='+str(campaign_id)
 			product1[AdCreativeLinkDataChildAttachment.Field.name] = category_name[0]
 			product1[AdCreativeLinkDataChildAttachment.Field.description] = 'Discount '+str(row[0])+'%'
-			product1[AdCreativeLinkDataChildAttachment.Field.image_hash] = image_hash.get_image_hash(image_link,rows[1])
+			product1[AdCreativeLinkDataChildAttachment.Field.image_hash] = image_hash.get_image_hash(image_link,rows[1],account_id)
 			simple_list.append(product1)
 
 		link = AdCreativeLinkData()
@@ -52,16 +53,16 @@ def create_carousel_ad(caption,adset_id,ad_name,campaign_id,times,design_list):
 		link[link.Field.caption] = caption
 
 		story = AdCreativeObjectStorySpec()
-		story[story.Field.page_id] = header.page_id
+		story[story.Field.page_id] = constants.page_id
 		story[story.Field.link_data] = link
 
-		creative = AdCreative(parent_id=header.my_account['id'])
+		creative = AdCreative(parent_id=account_id)
 		creative[AdCreative.Field.name] = 'MPA Creative'
 		creative[AdCreative.Field.object_story_spec] = story
 		creative.remote_create()
 		creative=json.loads(str(creative).replace('<AdCreative> ',''))
 
-		ad = Ad(parent_id=header.my_account['id'])
+		ad = Ad(parent_id=account_id)
 		ad[Ad.Field.name] = ad_name
 		ad[Ad.Field.adset_id] = adset_id
 		ad[Ad.Field.status] = Campaign.Status.paused

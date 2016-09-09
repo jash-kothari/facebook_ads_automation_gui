@@ -5,19 +5,13 @@ from facebookads.objects import AdUser
 from facebookads.adobjects.adaccount import AdAccount
 from facebookads.adobjects.adaccountuser import AdAccountUser
 import os
-import json
+import my_constants as constants
 #Initialize a new Session and instantiate an API object:
-
-my_app_id = os.environ['ADS_FB_APP_ID']
-my_app_secret = os.environ['ADS_FB_APP_SECRET']
-my_access_token = os.environ['ADS_FB_APP_ACCESS_TOKEN'] # Your user access token
-page_id = os.environ['FB_PAGE_ID']
-database = os.environ['FB_APP_DATABASE']
-host = os.environ['FB_APP_DATABASE_HOST']
-port = os.environ['FB_APP_DATABASE_PORT']
-user = os.environ['FB_APP_DATABASE_USER']
-password = os.environ['FB_APP_DATABASE_PASSWORD']
-FacebookAdsApi.init(my_app_id, my_app_secret, my_access_token)
-me = AdUser(fbid='me')
-my_account = me.get_ad_accounts()[0]
-my_account=json.loads(str(my_account).replace('<AdAccount> ',''))
+FacebookAdsApi.init(constants.my_app_id, constants.my_app_secret, constants.my_access_token)
+def get_ids():
+	me = AdUser(fbid='me')
+	my_account=me.get_ad_accounts(fields=[AdAccount.Field.name,AdAccount.Field.id])
+	id_list={}
+	for i in xrange(len(my_account)):
+		id_list[my_account[i][AdAccount.Field.id]] = my_account[i][AdAccount.Field.name]
+	return id_list

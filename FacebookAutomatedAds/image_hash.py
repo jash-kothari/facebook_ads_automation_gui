@@ -3,9 +3,9 @@ import header
 import urllib
 import os
 
-def get_image_hash(url,name):
+def get_image_hash(url,name,account_id):
 	urllib.urlretrieve(url,name)
-	image = AdImage(parent_id=header.my_account['id'])
+	image = AdImage(parent_id=account_id)
 	image[AdImage.Field.filename] = name
 	image.remote_create()
 	os.remove(name)
