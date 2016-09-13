@@ -4,29 +4,33 @@ from facebookads.adobjects.adcreative import AdCreative
 from facebookads.adobjects.adcreativelinkdata import AdCreativeLinkData
 from facebookads.adobjects.adcreativeobjectstoryspec import AdCreativeObjectStorySpec
 from facebookads.adobjects.adcreativelinkdatachildattachment import AdCreativeLinkDataChildAttachment
+from time import sleep
 import header
 import my_constants as constants
 import json
 import psycopg2
 import image_hash
 import sys
+import urlparse
 
 def create_carousel_ad(caption,adset_id,ad_name,campaign_id,times,design_list,account_id):
-	con = None
+	conn = None
 	simple_list=[]
 	try:
-		con = psycopg2.connect(database=constants.database, user=constants.user, password=constants.password,host=constants.host,port=constants.port)
-		cur = con.cursor()
+		urlparse.uses_netloc.append("postgres")
+		url = urlparse.urlparse(constants.database_url)
+		conn = psycopg2.connect( database=url.path[1:], user=url.username, password=url.password, host=url.hostname, port=url.port )
+		curr = conn.cursor()
 		for i in xrange(times):
 			design_id=design_list[i]
-			cur.execute('SELECT discount_percent,designer_id from designs where id='+str(design_id))
-			row=cur.fetchone()
+			curr.execute('SELECT discount_percent,designer_id from designs where id='+str(design_id))
+			row=curr.fetchone()
 			#row[0] is discount percentage and row[1] is designer_id
-			cur.execute('SELECT id,photo_file_name FROM images where design_id = '+str(design_id))
-			rows=cur.fetchone()
+			curr.execute('SELECT id,photo_file_name FROM images where design_id = '+str(design_id))
+			rows=curr.fetchone()
 			#rows[0] is image id and rows[1] is photo file name
-			cur.execute('SELECT name FROM "categories" INNER JOIN "categories_designs" ON "categories"."id" = "categories_designs"."category_id" WHERE design_id ='+str(design_id))
-			category_name = cur.fetchone()
+			curr.execute('SELECT name FROM "categories" INNER JOIN "categories_designs" ON "categories"."id" = "categories_designs"."category_id" WHERE design_id ='+str(design_id))
+			category_name = curr.fetchone()
 			image_link=""
 			if 'jpg' in rows[1]:
 				image_link = 'https://assets1.mirraw.com/images/'+str(rows[0])+'/'+rows[1].replace('.jpg','')+'_large.jpg' 
@@ -45,6 +49,7 @@ def create_carousel_ad(caption,adset_id,ad_name,campaign_id,times,design_list,ac
 			product1[AdCreativeLinkDataChildAttachment.Field.name] = category_name[0]
 			product1[AdCreativeLinkDataChildAttachment.Field.description] = 'Discount '+str(row[0])+'%'
 			product1[AdCreativeLinkDataChildAttachment.Field.image_hash] = image_hash.get_image_hash(image_link,rows[1],account_id)
+			sleep(0.5)
 			simple_list.append(product1)
 
 		link = AdCreativeLinkData()
@@ -68,17 +73,17 @@ def create_carousel_ad(caption,adset_id,ad_name,campaign_id,times,design_list,ac
 		ad[Ad.Field.status] = Campaign.Status.paused
 		ad[Ad.Field.creative] = {'creative_id': str(creative['id'])}
 		ad.remote_create()
+		print ad
 
 	except psycopg2.DatabaseError, e:
 		print 'Error %s' % e
 		return False
-		sys.exit(1)
 
 	except StandardError, e:
 		print 'Error %s' % e
 		return False
 
 	finally:
-		if con:
-			con.close()
+		if conn:
+			conn.close()
 	return True

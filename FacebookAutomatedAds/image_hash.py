@@ -9,5 +9,4 @@ def get_image_hash(url,name,account_id):
 	image[AdImage.Field.filename] = name
 	image.remote_create()
 	os.remove(name)
-	# Output image Hash
 	return image[AdImage.Field.hash]

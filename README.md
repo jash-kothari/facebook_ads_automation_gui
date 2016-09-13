@@ -11,15 +11,7 @@ ADS_FB_APP_SECRET = Your Facebook App Secret
 
 ADS_FB_APP_ACCESS_TOKEN = Access token for ads management
 
-FB_APP_DATABASE = Your Database Name
-
-FB_APP_DATABASE_HOST = Your Database Host
-
-FB_APP_DATABASE_PORT = Your DatabasePort
-
-FB_APP_DATABASE_USER = Your Database User
-
-FB_APP_DATABASE_PASSWORD = Your Database Password
+FB_APP_DATABASE_URL = Your Database URL for Postgres
 
 DJANGO_APP_SECRET = Your Django App Secret Key
 
