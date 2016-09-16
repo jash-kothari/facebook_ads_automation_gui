@@ -13,13 +13,13 @@ import image_hash
 import sys
 import urlparse
 
-def create_carousel_ad(caption,adset_id,ad_name,campaign_id,times,design_list,account_id):
+def create_carousel_ad(caption,adset_id,ad_name,campaign_id,times,design_list,account_id,land_on_design,url,campaign_tag):
 	conn = None
 	simple_list=[]
 	try:
 		urlparse.uses_netloc.append("postgres")
-		url = urlparse.urlparse(constants.database_url)
-		conn = psycopg2.connect( database=url.path[1:], user=url.username, password=url.password, host=url.hostname, port=url.port )
+		database_url = urlparse.urlparse(constants.database_url)
+		conn = psycopg2.connect( database=database_url.path[1:], user=database_url.username, password=database_url.password, host=database_url.hostname, port=database_url.port )
 		curr = conn.cursor()
 		for i in xrange(times):
 			design_id=design_list[i]
@@ -45,7 +45,10 @@ def create_carousel_ad(caption,adset_id,ad_name,campaign_id,times,design_list,ac
 			if row[0] is None:
 				row[0]=0
 			product1 = AdCreativeLinkDataChildAttachment()
-			product1[AdCreativeLinkDataChildAttachment.Field.link] = 'www.mirraw.com/designers/'+str(row[1])+'/designs/'+design_id+'?utm_source=facebook-auto&utm_medium=cpc&utm_campaign='+str(campaign_id)
+			if land_on_design:
+				product1[AdCreativeLinkDataChildAttachment.Field.link] = 'www.mirraw.com/designers/'+str(row[1])+'/designs/'+str(design_id)+'?utm_source=facebook-auto&utm_medium=cpc&utm_campaign='+campaign_tag
+			else:
+				product1[AdCreativeLinkDataChildAttachment.Field.link] = url+'?'+str(design_id)+'&utm_source=facebook-auto&utm_medium=cpc&utm_campaign='+campaign_tag
 			product1[AdCreativeLinkDataChildAttachment.Field.name] = category_name[0]
 			product1[AdCreativeLinkDataChildAttachment.Field.description] = 'Discount '+str(row[0])+'%'
 			product1[AdCreativeLinkDataChildAttachment.Field.image_hash] = image_hash.get_image_hash(image_link,rows[1],account_id)
@@ -57,6 +60,7 @@ def create_carousel_ad(caption,adset_id,ad_name,campaign_id,times,design_list,ac
 		link[link.Field.child_attachments] = simple_list
 		link[link.Field.caption] = caption
 
+		print link
 		story = AdCreativeObjectStorySpec()
 		story[story.Field.page_id] = constants.page_id
 		story[story.Field.link_data] = link
@@ -67,11 +71,13 @@ def create_carousel_ad(caption,adset_id,ad_name,campaign_id,times,design_list,ac
 		creative.remote_create()
 		creative=json.loads(str(creative).replace('<AdCreative> ',''))
 
+		print creative
 		ad = Ad(parent_id=account_id)
 		ad[Ad.Field.name] = ad_name
 		ad[Ad.Field.adset_id] = adset_id
 		ad[Ad.Field.status] = Campaign.Status.paused
 		ad[Ad.Field.creative] = {'creative_id': str(creative['id'])}
+		print 'Creating Ad'
 		ad.remote_create()
 		print ad
 
