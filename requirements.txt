@@ -6,3 +6,4 @@ whitenoise==3.2
 facebookads
 six
 requests
+Pillow
