@@ -4,12 +4,13 @@ import urllib
 import os
 from PIL import Image as Img
 import StringIO
+import my_constants as constants
 
 def get_image_hash(url,name,account_id):
 	try:
 		print 'Downloading image'
 		urllib.urlretrieve(url,name)
-		image1 = Img.open('/home/mirrawdev3/ads_automation_facebook/python_trial/Facebook_Ads/'+name)
+		image1 = Img.open(constants.PWD+'/'+name)
 		width,height = image1.size
 		size = width if width < height else height
 		# The following is for center cropping
