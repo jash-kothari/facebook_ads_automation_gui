@@ -16,6 +16,8 @@ import urlparse
 def create_carousel_ad(caption,adset_id,ad_name,campaign_id,times,design_list,account_id,land_on_design,url,campaign_tag):
 	conn = None
 	simple_list=[]
+	account_medium_list={"act_940036526039709":"fb_ocpc","act_938286879548007":"acpm","act_1010404049002956":"acpm","act_1385041538425866":"acpm","act_1128744890502204":"jcpc","act_10152414205523137":"int","act_972844956092199":"test"}
+	utm_medium=account_medium_list[account_id]
 	try:
 		urlparse.uses_netloc.append("postgres")
 		database_url = urlparse.urlparse(constants.database_url)
@@ -46,9 +48,9 @@ def create_carousel_ad(caption,adset_id,ad_name,campaign_id,times,design_list,ac
 				row[0]=0
 			product1 = AdCreativeLinkDataChildAttachment()
 			if land_on_design:
-				product1[AdCreativeLinkDataChildAttachment.Field.link] = 'www.mirraw.com/designers/'+str(row[1])+'/designs/'+str(design_id)+'?utm_source=facebook-auto&utm_medium=cpc&utm_campaign='+campaign_tag
+				product1[AdCreativeLinkDataChildAttachment.Field.link] = 'www.mirraw.com/designers/'+str(row[1])+'/designs/'+str(design_id)+'?utm_source=facebook-auto&utm_medium='+utm_medium+'&utm_campaign='+campaign_tag
 			else:
-				product1[AdCreativeLinkDataChildAttachment.Field.link] = url+'?'+str(design_id)+'&utm_source=facebook-auto&utm_medium=cpc&utm_campaign='+campaign_tag
+				product1[AdCreativeLinkDataChildAttachment.Field.link] = url+'?'+str(design_id)+'&utm_source=facebook&utm_medium='+utm_medium+'&utm_campaign='+campaign_tag
 			product1[AdCreativeLinkDataChildAttachment.Field.name] = category_name[0]
 			product1[AdCreativeLinkDataChildAttachment.Field.description] = 'Discount '+str(row[0])+'%'
 			product1[AdCreativeLinkDataChildAttachment.Field.image_hash] = image_hash.get_image_hash(image_link,rows[1],account_id)
