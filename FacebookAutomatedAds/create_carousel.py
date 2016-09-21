@@ -9,10 +9,11 @@ import header
 import my_constants as constants
 import json
 import psycopg2
+import psycopg2.extras
 import image_hash
 import sys
 import urlparse
-
+from facebookads import exceptions
 def create_carousel_ad(caption,adset_id,ad_name,campaign_id,times,design_list,account_id,land_on_design,url,campaign_tag):
 	conn = None
 	simple_list=[]
@@ -22,7 +23,7 @@ def create_carousel_ad(caption,adset_id,ad_name,campaign_id,times,design_list,ac
 		urlparse.uses_netloc.append("postgres")
 		database_url = urlparse.urlparse(constants.database_url)
 		conn = psycopg2.connect( database=database_url.path[1:], user=database_url.username, password=database_url.password, host=database_url.hostname, port=database_url.port )
-		curr = conn.cursor()
+		curr = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 		for i in xrange(times):
 			design_id=design_list[i]
 			curr.execute('SELECT discount_percent,designer_id from designs where id='+str(design_id))
@@ -34,24 +35,24 @@ def create_carousel_ad(caption,adset_id,ad_name,campaign_id,times,design_list,ac
 			curr.execute('SELECT name FROM "categories" INNER JOIN "categories_designs" ON "categories"."id" = "categories_designs"."category_id" WHERE design_id ='+str(design_id))
 			category_name = curr.fetchone()
 			image_link=""
-			if 'jpg' in rows[1]:
-				image_link = 'https://assets1.mirraw.com/images/'+str(rows[0])+'/'+rows[1].replace('.jpg','')+'_large.jpg' 
-			elif 'tif' in rows[1]:
-				image_link = 'https://assets1.mirraw.com/images/'+str(rows[0])+'/'+rows[1].replace('.tif','')+'_large.tif' 
-			elif 'gif' in rows[1]:
-				image_link = 'https://assets1.mirraw.com/images/'+str(rows[0])+'/'+rows[1].replace('.gif','')+'_large.gif' 
-			elif 'bmp' in rows[1]:
-				image_link = 'https://assets1.mirraw.com/images/'+str(rows[0])+'/'+rows[1].replace('.bmp','')+'_large.bmp' 
-			elif 'png' in rows[1]:
-				image_link = 'https://assets1.mirraw.com/images/'+str(rows[0])+'/'+rows[1].replace('.png','')+'_large.png' 
+			if 'jpg' in rows['photo_file_name']:
+				image_link = 'https://assets1.mirraw.com/images/'+str(rows['id'])+'/'+rows['photo_file_name'].replace('.jpg','')+'_large.jpg' 
+			elif 'tif' in rows['photo_file_name']:
+				image_link = 'https://assets1.mirraw.com/images/'+str(rows['id'])+'/'+rows['photo_file_name'].replace('.tif','')+'_large.tif' 
+			elif 'gif' in rows['photo_file_name']:
+				image_link = 'https://assets1.mirraw.com/images/'+str(rows['id'])+'/'+rows['photo_file_name'].replace('.gif','')+'_large.gif' 
+			elif 'bmp' in rows['photo_file_name']:
+				image_link = 'https://assets1.mirraw.com/images/'+str(rows['id'])+'/'+rows['photo_file_name'].replace('.bmp','')+'_large.bmp' 
+			elif 'png' in rows['photo_file_name']:
+				image_link = 'https://assets1.mirraw.com/images/'+str(rows['id'])+'/'+rows['photo_file_name'].replace('.png','')+'_large.png' 
 			if row[0] is None:
 				row[0]=0
 			product1 = AdCreativeLinkDataChildAttachment()
 			if land_on_design:
-				product1[AdCreativeLinkDataChildAttachment.Field.link] = 'www.mirraw.com/designers/'+str(row[1])+'/designs/'+str(design_id)+'?utm_source=facebook-auto&utm_medium='+utm_medium+'&utm_campaign='+campaign_tag
+				product1[AdCreativeLinkDataChildAttachment.Field.link] = 'www.mirraw.com/designers/'+str(row['designer_id'])+'/designs/'+str(design_id)+'?utm_source=facebook-auto&utm_medium='+utm_medium+'&utm_campaign='+campaign_tag
 			else:
 				product1[AdCreativeLinkDataChildAttachment.Field.link] = url+'?'+str(design_id)+'&utm_source=facebook&utm_medium='+utm_medium+'&utm_campaign='+campaign_tag
-			product1[AdCreativeLinkDataChildAttachment.Field.name] = category_name[0]
+			product1[AdCreativeLinkDataChildAttachment.Field.name] = category_name['name']
 			product1[AdCreativeLinkDataChildAttachment.Field.description] = 'Discount '+str(row[0])+'%'
 			product1[AdCreativeLinkDataChildAttachment.Field.image_hash] = image_hash.get_image_hash(image_link,rows[1],account_id)
 			sleep(0.5)
@@ -88,6 +89,9 @@ def create_carousel_ad(caption,adset_id,ad_name,campaign_id,times,design_list,ac
 		return False
 
 	except StandardError, e:
+		print 'Error %s' % e
+		return False
+	except exceptions.FacebookError, e:
 		print 'Error %s' % e
 		return False
 
