@@ -5,10 +5,14 @@ import os
 from PIL import Image as Img
 import StringIO
 import my_constants as constants
+import logging
+from datetime import date
 
 def get_image_hash(url,name,account_id):
 	try:
-		print 'Downloading image'
+		FORMAT = '%(asctime)-15s %(pathname)s %(message)s'
+		logging.basicConfig(filename='%s-facebook-automated.log' % date.today(),format=FORMAT, level=logging.DEBUG)
+		logging.info('Downloading image')
 		urllib.urlretrieve(url,name)
 		image1 = Img.open(constants.PWD+'/'+name)
 		width,height = image1.size
@@ -20,10 +24,18 @@ def get_image_hash(url,name,account_id):
 		image1.close()
 		image = AdImage(parent_id=account_id)
 		image[AdImage.Field.filename] = name
-		print 'Uploading image'
+		logging.info('Uploading image')
 		image.remote_create()
 		os.remove(name)
-		print 'Deleted image locally'
+		logging.info('Deleted image locally')
 	except OSError, e:
-		print 'Error %s' % e
+		logging.error('Error %s' % e)
 	return image[AdImage.Field.hash]
+
+def get_image_link(name,image_id):
+	image_link=""
+	extensions=['jpg','tif','gif','bmp','png']
+	for extension in extensions:
+		if extension in name:
+			image_link = constants.base_url+str(image_id)+'/'+name.replace('.'+extension,'') + constants.size+'.'+extension 
+	return image_link

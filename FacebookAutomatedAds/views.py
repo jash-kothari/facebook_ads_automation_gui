@@ -2,7 +2,12 @@ from django.http import HttpResponse
 from django.shortcuts import render
 import create_carousel
 import header
+import logging
+from datetime import date
+from time import sleep
 
+FORMAT = '%(asctime)-15s %(pathname)s %(message)s'
+logging.basicConfig(filename='%s-facebook-automated.log' % date.today(),format=FORMAT, level=logging.DEBUG)
 # Create your views here.
 def index(request):
 	id_list=header.get_ids
@@ -41,4 +46,6 @@ def get_data(request):
 			'campaign_tag':campaign_tag,
 			'failure': success
 		}
+	logging.info(context)
+	sleep(10)
 	return render(request, 'FacebookAutomatedAds/index.html',context)
