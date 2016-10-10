@@ -6,7 +6,7 @@ import logging
 from datetime import date
 from time import sleep
 
-FORMAT = '%(asctime)-15s %(pathname)s %(message)s'
+FORMAT = '%(name)s:%(levelname)s:%(filename)s:%(asctime)-15s:%(message)s'
 logging.basicConfig(filename='%s-facebook-automated.log' % date.today(),format=FORMAT, level=logging.DEBUG)
 # Create your views here.
 def index(request):

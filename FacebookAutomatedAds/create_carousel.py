@@ -18,7 +18,7 @@ import logging
 from datetime import date
 
 def create_carousel_ad(caption,adset_id,ad_name,campaign_id,times,design_list,account_id,land_on_design,url,campaign_tag):
-	FORMAT = '%(asctime)-15s %(pathname)s %(message)s'
+	FORMAT = '%(name)s:%(levelname)s:%(filename)s:%(asctime)-15s:%(message)s'
 	logging.basicConfig(filename='%s-facebook-automated.log' % date.today(),format=FORMAT, level=logging.DEBUG)
 	conn = None
 	simple_list=[]
