@@ -17,9 +17,8 @@ from facebookads import exceptions
 import logging
 from datetime import date
 
-def create_carousel_ad(caption,adset_id,ad_name,campaign_id,times,design_list,account_id,land_on_design,url,campaign_tag):
-	FORMAT = '%(name)s:%(levelname)s:%(filename)s:%(asctime)-15s:%(message)s'
-	logging.basicConfig(filename='%s-facebook-automated.log' % date.today(),format=FORMAT, level=logging.DEBUG)
+def create_carousel_ad(caption,adset_id,ad_name,times,design_list,account_id,land_on_design,url,campaign_tag):
+	logger = logging.getLogger('testlogger')
 	conn = None
 	simple_list=[]
 	account_medium_list={"act_940036526039709":"fb_ocpc","act_938286879548007":"acpm","act_1010404049002956":"acpm","act_1385041538425866":"acpm","act_1128744890502204":"jcpc","act_10152414205523137":"int","act_972844956092199":"test"}
@@ -56,7 +55,7 @@ def create_carousel_ad(caption,adset_id,ad_name,campaign_id,times,design_list,ac
 		link[link.Field.child_attachments] = simple_list
 		link[link.Field.caption] = caption
 
-		logging.info(link)
+		logger.info(link)
 		story = AdCreativeObjectStorySpec()
 		story[story.Field.page_id] = constants.page_id
 		story[story.Field.link_data] = link
@@ -67,22 +66,22 @@ def create_carousel_ad(caption,adset_id,ad_name,campaign_id,times,design_list,ac
 		creative.remote_create()
 		creative=json.loads(str(creative).replace('<AdCreative> ',''))
 
-		logging.info(creative)
+		logger.info(creative)
 		ad = Ad(parent_id=account_id)
 		ad[Ad.Field.name] = ad_name
 		ad[Ad.Field.adset_id] = adset_id
 		ad[Ad.Field.status] = Campaign.Status.paused
 		ad[Ad.Field.creative] = {'creative_id': str(creative['id'])}
-		logging.info('Creating Ad')
+		logger.info('Creating Ad')
 		ad.remote_create()
-		logging.info(ad)
+		logger.info(ad)
 
 	except psycopg2.DatabaseError, e:
-		logging.error('Error %s' % e)
+		logger.error('Error %s' % e)
 		return False
 
 	except exceptions.FacebookError, e:
-		logging.error('Error %s' % e)
+		logger.error('Error %s' % e)
 		return False
 
 	finally:

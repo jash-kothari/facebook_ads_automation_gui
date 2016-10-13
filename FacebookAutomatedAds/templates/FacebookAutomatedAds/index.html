@@ -1,92 +1,18 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<title>Facebook Ads Automation</title>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	{% load static %}
-	<link rel="stylesheet" href="{% static 'bootstrap.min.css' %}">
-	<link rel="stylesheet" href="{% static 'bootstrap-theme.min.css' %}">
-	<script src="{% static 'jquery.min.js' %}"></script>
-	<script src="{% static 'bootstrap.min.js' %}"></script>
-	<style>
-		/* Remove the navbar's default margin-bottom and rounded borders */
-		.navbar {
-			margin-bottom: 0;
-			border-radius: 0;
-		}
-
-		/* Set height of the grid so .sidenav can be 100% (adjust as needed) */
-		.row.content {height: 450px}
-
-		/* Set gray background color and 100% height */
-		.sidenav {
-			padding-top: 20px;
-			background-color: #f1f1f1;
-			height: 100%;
-		}
-
-		/* Set black background color, white text and some padding */
-		footer {
-			background-color: #555;
-			color: white;
-			padding: 15px;
-		}
-
-		/* On small screens, set height to 'auto' for sidenav and grid */
-		@media screen and (max-width: 767px) {
-			.sidenav {
-				height: auto;
-				padding: 15px;
-			}
-			.row.content {height:auto;}
-		}
-	</style>
-	<script type="text/javascript">
-		function toggle(checkboxID, toggleID) {
-			var checkbox = document.getElementById(checkboxID);
-			var toggle = document.getElementById(toggleID);
-			updateToggle = checkbox.checked ? toggle.disabled=true : toggle.disabled=false;
-		}
-	</script>
-</head>
-<body>
-	<nav class="navbar navbar-inverse">
-		<div class="container-fluid">
-			<div class="navbar-header">
-				<a class="navbar-brand" href="{% url 'index' %}">Facebook Ads Automation</a>
-			</div>
-			<div class="collapse navbar-collapse" id="myNavbar">
-				<ul class="nav navbar-nav">
-				</ul>
-				<ul class="nav navbar-nav navbar-right">
-				</ul>
-			</div>
-		</div>
-	</nav>
-	{% if success %}
-	<div class="alert alert-success">
-		Your Ad has been<strong>Created!</strong>
-	</div>
-	{% endif %}
-	{% if failure %}
-	<div class="alert alert-danger">
-		<strong>Error!</strong>Your Ad has not been created.
-	</div>
-	{% endif %}
+{% extends 'FacebookAutomatedAds/base.html' %}
+{% block content %}
 	<div class="container-fluid text-center">
 		<div class="row content">
-			<div class="col-sm-2">
+			<div class="col-sm-4">
 			</div>
 			<div class="col-sm-8">
-				<form class="form" action="{% url 'get_data' %}" method="post" style="margin-top:30px;">{% csrf_token %}
-					<div class="col-xs-6">
+				<form class="form" action="{% url 'get_campaigns' %}" method="post" style="margin-top:30px;">{% csrf_token %}
+					<div class="col-xs-8">
 						<div class="form-group">
 							<label for="ID_select">AdAccount Selection</label>
 							{% if id_list %}
-							<select name="id_select" id="ID_select" class="form-control">
+							<select name="id_select" id="ID_select" class="form-control" onchange="set_hidden_field('Account_name','ID_select')">
 								{% for k,v in id_list.iteritems %}
-								<option value={{k}}>{{v}}</option>
+								<option value={{k}} label={{v}}>{{v}}</option>
 								{% endfor %}
 							</select>
 							{% else %}
@@ -94,57 +20,14 @@
 							{% endif %}
 						</div>
 						<div class="form-group">
-							<label for="Campaign_ID">Campaign ID</label>
-							{% if campaign_id %}
-							<input type="text" name="campaign_id" class="form-control" id="Campaign_ID" placeholder="Campaign Id" value={{campaign_id}}>
-							{% else %}
-							<input type="text" name="campaign_id" class="form-control" id="Campaign_ID" placeholder="Campaign Id">
-							{% endif %}
-						</div>
-						<div class="form-group">
-							<label for="AdSet_ID">Adset ID</label>
-							{% if adset_id %}
-							<input type="text" name="adset_id" class="form-control" id="AdSet_ID" placeholder="Adset Id" value={{adset_id}}>
-							{% else %}
-							<input type="text" name="adset_id" class="form-control" id="AdSet_ID" placeholder="Adset Id">
-							{% endif %}
-						</div>
-						<div class="form-group">
-							<label for="Product_IDS">Design ID</label>
-							<input type="text" name="product_ids" class="form-control" id="Product_IDS" placeholder="Design Ids in CSV format">
-						</div>
-						<div class="form-group">
-							<label for="Design_Landing">Land on Design</label>
-							<input type="checkbox" name="design_landing" id="Design_Landing" onclick="toggle('Design_Landing','URL')">
-						</div>
-					</div>
-					<div class="col-xs-6">
-						<div class="form-group">
-							<label for="URL">URL</label>
-							<input type="text" name="url" class="form-control" id="URL" placeholder="URL">
-						</div>
-						<div class="form-group">
-							<label for="Caption">Caption</label>
-							<input type="text" name="caption" class="form-control" id="Caption" placeholder="Caption for the ad">
-						</div>
-						<div class="form-group">
-							<label for="AdName">Ad Name</label>
-							<input type="text" name="ad_name" class="form-control" id="AdName" placeholder="Name for the ad">
-						</div>
-						<div class="form-group">
-							<label for="Campaign_Tag">Campaign for Url Tagging</label>
-							{% if campaign_tag %}
-							<input type="text" name="campaign_tag" class="form-control" id="Campaign_tag" placeholder="Campaign Tag name for utm_campaign" value={{campaign_tag}}>
-							{% else %}
-							<input type="text" name="campaign_tag" class="form-control" id="Campaign_tag" placeholder="Campaign Tag name for utm_campaign">
-							{% endif %}
+							<!-- <label for="ID">Ad Account</label> -->
+							<input type="hidden" name="account_name" class="form-control" id="Account_name" placeholder="AdAccount Name">
 						</div>
 						<br>
-						<button type="submit" class="btn btn-default">Create Ad</button>
+						<button type="submit" class="btn btn-default">Get Campaigns</button>
 					</div>
 				</form>
 			</div>
 		</div>
 	</div>
-</body>
-</html>
+{% endblock %}
