@@ -13,5 +13,6 @@ def get_ids():
 	my_account=me.get_ad_accounts(fields=[AdAccount.Field.name,AdAccount.Field.id])
 	id_list={}
 	for i in xrange(len(my_account)):
-		id_list[my_account[i][AdAccount.Field.id]] = my_account[i][AdAccount.Field.name]
+		id_list[str(my_account[i][AdAccount.Field.id])] = str(my_account[i][AdAccount.Field.name])
+	print id_list
 	return id_list

@@ -12,7 +12,7 @@
 							{% if id_list %}
 							<select name="id_select" id="ID_select" class="form-control" onchange="set_hidden_field('Account_name','ID_select')">
 								{% for k,v in id_list.iteritems %}
-								<option value={{k}} label={{v}}>{{v}}</option>
+								<option value={{k}}>{{v}}</option>
 								{% endfor %}
 							</select>
 							{% else %}
