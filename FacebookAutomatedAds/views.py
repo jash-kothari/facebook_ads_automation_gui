@@ -25,15 +25,17 @@ def get_data(request):
 	design_ids = request.POST.get('product_ids').split(',')
 	caption = request.POST.get('caption',False)
 	ad_name = request.POST.get('ad_name',False)
-	land_on_design = request.POST.get('design_landing',False)
-	print account_id
-	if "on" in land_on_design:
-		url=''
-		land_on_design = True
-	else:
-		url = request.POST.get('URL',False)
+	if "design_landing" not in request.POST:
 		land_on_design = False
+	else:
+		land_on_design = True
+	print account_id
+	print land_on_design
+	url = request.POST.get('url',False)
+	print url
 	campaign_tag = request.POST.get('campaign_tag',False)
+	print campaign_tag
+	logger.debug("Going to create ad now")
 	success = create_carousel.create_carousel_ad(caption,adset_id,ad_name,len(design_ids),design_ids,account_id,land_on_design,url,campaign_tag)
 	# logger.info(context)
 	ad_creation = "alert alert-success" if success else "alert alert-failure"

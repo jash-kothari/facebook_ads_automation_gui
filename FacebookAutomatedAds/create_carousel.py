@@ -19,6 +19,7 @@ from datetime import date
 
 def create_carousel_ad(caption,adset_id,ad_name,times,design_list,account_id,land_on_design,url,campaign_tag):
 	logger = logging.getLogger('testlogger')
+	logger.debug("In create carousel")
 	conn = None
 	simple_list=[]
 	account_medium_list={"act_940036526039709":"fb_ocpc","act_938286879548007":"acpm","act_1010404049002956":"acpm","act_1385041538425866":"acpm","act_1128744890502204":"jcpc","act_10152414205523137":"int","act_972844956092199":"test"}
