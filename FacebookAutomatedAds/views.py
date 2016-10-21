@@ -49,7 +49,6 @@ def get_data(request):
 		'success': ad_creation,
 		'message': message
 		}
-	sleep(10)
 	return render(request, 'FacebookAutomatedAds/adset_list.html',context)
 
 

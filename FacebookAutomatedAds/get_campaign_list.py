@@ -18,6 +18,7 @@ def get_campaign_list(account_id):
 			if 'ACTIVE' in campaign[Campaign.Field.status]:
 				active_campaign_hash[campaign[Campaign.Field.id]]=campaign[Campaign.Field.name]
 		logger.info(active_campaign_hash)
+		sleep(5)
 		return active_campaign_hash
 
 	except exceptions.FacebookError, e:
@@ -34,7 +35,9 @@ def get_adset_list(campaign_id):
 			if 'ACTIVE' in adset[AdSet.Field.status]:
 				active_adset_hash[adset[AdSet.Field.id]]=adset[AdSet.Field.name]
 		logger.info(active_adset_hash)
+		sleep(5)
 		return active_adset_hash
+
 	except exceptions.FacebookError, e:
 		logger.error('Error %s' % e)
 		return {}

@@ -75,6 +75,7 @@ def create_carousel_ad(caption,adset_id,ad_name,times,design_list,account_id,lan
 		ad[Ad.Field.creative] = {'creative_id': str(creative['id'])}
 		logger.info('Creating Ad')
 		ad.remote_create()
+		sleep(15)
 		logger.info(ad)
 
 	except psycopg2.DatabaseError, e:

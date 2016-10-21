@@ -25,6 +25,7 @@ def get_image_hash(url,name,account_id):
 		image[AdImage.Field.filename] = name
 		logger.info('Uploading image')
 		image.remote_create()
+		sleep(2)
 		os.remove(name)
 		logger.info('Deleted image locally')
 	except OSError, e:
