@@ -37,6 +37,7 @@
 								{% for k,v in adset_list.iteritems %}
 									<option value={{k}}>{{v}}</option>
 								{% endfor %}
+								<option value="default" selected="selected">Please select an adset</option>
 							</select>
 							{% else %}
 								<h1>No ids found</h1>
