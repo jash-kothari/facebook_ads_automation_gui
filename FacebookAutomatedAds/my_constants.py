@@ -7,4 +7,3 @@ page_id = os.environ['FB_PAGE_ID']
 database_url = os.environ['FB_APP_DATABASE_URL']
 PWD = os.environ['PWD']
 base_url='https://assets1.mirraw.com/images/'
-size='_large'

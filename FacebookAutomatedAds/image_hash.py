@@ -7,6 +7,7 @@ import StringIO
 import my_constants as constants
 import logging
 from datetime import date
+from time import sleep
 
 def get_image_hash(url,name,account_id):
 	try:
@@ -25,17 +26,16 @@ def get_image_hash(url,name,account_id):
 		image[AdImage.Field.filename] = name
 		logger.info('Uploading image')
 		image.remote_create()
-		sleep(2)
 		os.remove(name)
 		logger.info('Deleted image locally')
 	except OSError, e:
 		logger.error('Error %s' % e)
 	return image[AdImage.Field.hash]
 
-def get_image_link(name,image_id):
+def get_image_link(name,image_id,size='_large'):
 	image_link=""
 	extensions=['jpg','tif','gif','bmp','png']
 	for extension in extensions:
 		if extension in name:
-			image_link = constants.base_url+str(image_id)+'/'+name.replace('.'+extension,'') + constants.size+'.'+extension 
+			image_link = constants.base_url+str(image_id)+'/'+name.replace('.'+extension,'') + size + '.' + extension
 	return image_link
